@@ -1,0 +1,9 @@
+# Used when building neorual-service (context: manus-clone root)
+node_modules
+.git
+dist
+.manus-logs
+*.log
+.env
+.env.*
+!.env.example

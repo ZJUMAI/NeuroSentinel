@@ -1,0 +1,41 @@
+{
+  "version": "7",
+  "dialect": "mysql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1770369938592,
+      "tag": "0000_goofy_skrulls",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1770371054923,
+      "tag": "0001_public_drax",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1770376038642,
+      "tag": "0002_gray_invisible_woman",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "5",
+      "when": 1770450000000,
+      "tag": "0003_password_login",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "5",
+      "when": 1770500000000,
+      "tag": "0004_projects",
+      "breakpoints": true
+    }
+  ]
+}

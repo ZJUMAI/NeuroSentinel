@@ -1,0 +1,432 @@
+Name = "wrMTrck_Batch v1.04"
+//
+// This macro batch processes all the movie files in a folder and any
+// subfolders in that folder. It provides several options for background subtraction 
+// and subtracting the maximum image from the whole stack. 
+// 
+// Version history 
+// 1.0 
+// - 	first release
+// 1.01
+// -	fixed problem with script where saving of PNG files changed images named "max" and "background" 
+//    	to "max.png" and "background.png" causing the script to fail on mac OS
+// -	Added posibility to use Huang thresholding (option = 2)
+// -	Added posibility to use fluorescent images (FL under background subtraction)
+// 1.02 
+// - 	Added simple FL-RB50F1 background subtraction algorithm for fluorescent movies option 
+// 1.03 
+// -	Added an extra input field to allow fluorescent movies (dark animals on light or fluorescent animals on dark background)	
+// -	Added a number of experimental extra features such as skeletonize and so on.
+// 1.04 
+// -	Added support for new imput values in the wrMTrck plugin
+// -	Changed the imput for thresholding from values to a chooser box
+
+  requires("1.34m"); 
+  dir = getDirectory("Choose a Directory ");
+  closeAll();
+//
+//attempt to load previous settings from the wrMTrck-settings.txt if it exist
+//
+
+  if (File.exists(dir+"wrMTrck-settings.txt")) {
+	importSettingsTable();
+	fileTypeNr=getResult("fileType",0);
+	imageType=getResult("imageType",0);
+	backSub=getResult("backSub",0);
+	threshMode=getResult("threshMode",0);
+	fixedThresh=getResult("fixedThresh",0);
+	skeletonize = getResult("skeletonize",0);
+	movieDuration=getResult("movieDuration",0);
+	fps=getResult("fps",0);
+	pixPrMm=getResult("pixPrMm",0);
+	minSize=getResult("minSize",0);
+	maxSize=getResult("maxSize",0);
+	maxVelocity=getResult("maxVelocity",0);
+	maxAreaChange=getResult("maxAreaChange",0);
+	minTrackLength=getResult("minTrackLength",0);
+	bendThreshold=getResult("bendThreshold",0);
+	bendDetect=getResult("bendDetect",0);
+	rawData=getResult("rawData",0);
+  } 
+ else { 
+	fileTypeNr=0;
+	imageType=0;
+	backSub=0;
+	threshMode=11;
+	fixedThresh=0;
+	skeletonize=0;
+	movieDuration=30;
+	fps=0;
+	pixPrMm=0;
+	minSize=100;
+	maxSize=300;
+	maxVelocity=15;
+	maxAreaChange=30;
+	minTrackLength=200;
+
+	bendThreshold=2;
+	bendDetect=2;
+	rawData=0;
+  }
+//
+//Setup the dialog to ask for all input variables
+//
+  methods = getList("threshold.methods");
+
+  Dialog.create(Name+" by Jesper S. Pedersen");
+  Dialog.addNumber("fileType - Movie file type to load: (0=cxd, 1=avi, 2=zip, 3=mov):", fileTypeNr); //=newArray(".cxd",".avi",".zip",".mov"));
+  Dialog.addNumber("imageType - Dark objects on light (0) or light objects on dark (1) background", imageType);
+  Dialog.addNumber("backSub - Background subtraction (0=none, 1=Max-Z, 2=Max-Z+RB50, 3=RB50, 4=SP1, 5=Max-Z+SP2", backSub); //newArray("Max-Z","RB50F1","RB50","SP1","none"));
+  Dialog.addNumber("fixedThresh - Fixed threshold level (0 = use threshMode setting):",fixedThresh);
+ // Dialog.addNumber("threshMode - Thresholding algorithm (-1=fixed, 0=Otsu, 1=MaxEntropy, 2=Huang):",threshMode);
+  Dialog.addChoice("threshMode  - Thresholding algorithm (used if fixedThresh=0): ", methods, methods[threshMode] );
+  Dialog.addNumber("skeletonize - Skeletonize worms for analysis (0=off,1=on)", skeletonize);
+  Dialog.addNumber("movieDuration - Real duriation of movie in seconds (0=use fps setting):", movieDuration);
+  Dialog.addNumber("fps - Framerate of moive (ignored if movieDuration>0, 0=load from file):", fps);
+  Dialog.addNumber("pixPrMm - Scaling units (pixels/mm - 0=pixel-units,-1=load from file):",pixPrMm);
+  Dialog.addNumber("minSize - Minimum Object Area (pixels^2):", minSize);
+  Dialog.addNumber("maxSize - Maximum Object Area (pixels^2):", maxSize);
+  Dialog.addNumber("maxVelocity - Maximum Velocity (pixels/frame):", maxVelocity);
+  Dialog.addNumber("maxAreaChange - Maximum Area Change (percent):", maxAreaChange);
+  Dialog.addNumber("minTrackLength - Minimum number of frames allowed for track (frames):", minTrackLength);
+  Dialog.addNumber("bendThreshold - Threshold for half bend (/frame):", bendThreshold);
+  Dialog.addNumber("bendDetect - (0=off, 1=angle, 2=shape):",bendDetect);
+  Dialog.addNumber("rawData - (0=off,1=XYcord,2=Ellipse,3=AreaPerimDist,4=Ellipse+Circ,5=BendCalc):",rawData);
+  Dialog.addCheckbox("Use existing binary zip file, if available.", true);
+  Dialog.addCheckbox("Show preview of movies during analysis (will slow down analysis!)",true);
+  Dialog.addCheckbox("delFirst - Delete first frame of movie",true)
+
+// show dialog
+
+  Dialog.show();
+
+// Get the variables from the dialog
+
+  fileTypeNr = Dialog.getNumber();
+  imageType = Dialog.getNumber();
+  backSub = Dialog.getNumber();
+  fixedThresh = Dialog.getNumber();
+
+  temp=Dialog.getChoice(); // attempt to convert the choice into a number
+  for (i=0;i<methods.length;i++) {
+   if (temp==methods[i]) threshMode=i;
+  }
+ 
+  skeletonize = Dialog.getNumber();
+  movieDuration = Dialog.getNumber();
+  fps = Dialog.getNumber();
+  pixPrMm = Dialog.getNumber();
+  minSize=Dialog.getNumber();
+  maxSize=Dialog.getNumber();
+  maxVelocity=Dialog.getNumber();
+  maxAreaChange=Dialog.getNumber();
+  minTrackLength=Dialog.getNumber();
+  bendThreshold=Dialog.getNumber();
+  bendDetect=Dialog.getNumber();
+  rawData= Dialog.getNumber();
+  useZip = Dialog.getCheckbox();
+  batchMode=!Dialog.getCheckbox();
+  delFirst=Dialog.getCheckbox();
+
+// Transfer the parameters to the result table and save it in the file wrMTrck-settings.txt
+
+  setResult("fileType",0,fileTypeNr);
+  setResult("imageType",0,imageType);
+  setResult("backSub",0,backSub);
+  setResult("threshMode",0,threshMode);
+  setResult("fixedThresh",0,fixedThresh);
+  setResult("skeletonize",0,skeletonize);
+  setResult("movieDuration",0,movieDuration);
+  setResult("fps",0,fps);
+  setResult("pixPrMm",0,pixPrMm);
+  setResult("minSize",0,minSize);
+  setResult("maxSize",0,maxSize);
+  setResult("maxVelocity",0,maxVelocity);
+  setResult("maxAreaChange",0,maxAreaChange);
+  setResult("minTrackLength",0,minTrackLength);
+  setResult("bendThreshold",0,bendThreshold);
+  setResult("bendDetect",0,bendDetect);
+  setResult("rawData",0,rawData);
+  setResult("delFirst",0,delFirst);
+
+  updateResults();
+
+  selectWindow("Results");
+  saveAs("Text", dir+"wrMTrck-settings.txt");
+
+// Setup the file-types and thresholding based on input values.
+
+  fileTypes = newArray(".cxd",".avi",".zip",".mov");
+  fileType= fileTypes[fileTypeNr];
+
+  threshModeText= methods[threshMode];//threshModes[threshMode];
+  print("Processing all "+fileType+"-files ... stand by");
+  setBatchMode(batchMode);
+  count = 0; pcount = 0 ;
+  countFiles(dir);
+  n = 0;
+  processFiles(dir);
+  print(pcount+ " of "+count+" files processed");
+  selectWindow("Summary");
+  saveAs("Text", dir+"Summary.txt");
+
+  exit;
+
+// Count all the files with the correct file-extension
+
+function countFiles(dir) {
+	list = getFileList(dir);
+	for (i=0; i<list.length; i++) {
+		if (endsWith(list[i], "/"))
+			countFiles(""+dir+list[i]);
+		else
+		if (endsWith(list[i], fileType)) count++;
+	}
+}
+
+// Process all files with the correct file-extension
+
+function processFiles(dir) {
+	list = getFileList(dir);
+	for (i=0; i<list.length; i++) {
+		if (endsWith(list[i], "/")) processFiles(""+dir+list[i]);
+		else 
+		if (endsWith(list[i], fileType)) {
+			showProgress(n++, count);
+			path = dir+list[i];
+			processFile(path);
+		}
+	}
+}
+
+// The following is function carries out all processing of a single file.
+
+function processFile(path) {
+	if (endsWith(path, fileType)& !endsWith(path, "labels.zip")) {
+	
+		print("Opening "+path);	
+		dotIndex = lastIndexOf(path, ".");
+		if (dotIndex!=-1) path = substring(path, 0, dotIndex); // remove extension
+
+		if (!useZip || !File.exists(path+".zip")) {	// We have not allready background corrected this movie
+  			// could have used open(path); // shows all dialogs - not good for macros
+			run("Open...","open=["+path+fileType+"] convert"); // converts to grayscale no questions asked!
+
+			if (movieDuration>0) {fps=nSlices/movieDuration;}; // calculate the framerate (fps) based on number of slices and the movieDuration
+
+			Stack.setFrameRate(fps);
+			if (!batchMode) {doCommand("Start Animation [\\]");};
+
+			threshold=fixedThresh;
+			if (imageType==1) {
+				run("Invert", "stack");
+				threshold=255-fixedThresh;
+			}
+			//print("threshold is "+threshold);
+
+//			run("Stack Deflicker", "frame=-1");
+//			run("QuickTime Movie...", "compression=Sorenson quality=Normal frame="+fps+" save="+path+".mov");
+
+			if (backSub==0) {
+				if (fixedThresh==0) setAutoThreshold(threshModeText);
+				else setThreshold(0, fixedThresh);
+			}
+
+			if (backSub==1) { //"Max-Z"
+				run("Stack Deflicker", "frame=-1");
+				title = getTitle();
+				Aid = getImageID();
+				run("Z Project...", "projection=[Max Intensity]") ;
+				run("PNG...", "save=["+path+"_max.PNG]");
+				rename("max");
+				selectImage(Aid);
+				run("Z Project...", "projection=[Min Intensity]") ;
+				run("PNG...", "save=["+path+"_min.PNG]");
+				rename("min");
+ 				run("Image Calculator...", "image1=["+title+"] operation=Difference image2=[max] stack");
+				selectImage(Aid);
+				if (fixedThresh==0) setAutoThreshold(threshModeText+" dark");
+				else setThreshold(threshold,255);
+			}
+			if (backSub==2) { //"Max-Z+RB50"
+				run("Stack Deflicker", "frame=-1");
+				title = getTitle();
+				Aid = getImageID();
+				run("Z Project...", "projection=[Min Intensity]") ;
+				run("PNG...", "save=["+path+"_min.PNG]");
+				rename("min");
+				selectImage(Aid);
+				run("Z Project...", "projection=[Max Intensity]") ;
+				run("PNG...", "save=["+path+"_max.PNG]");
+				run("Subtract Background...", "rolling=50 light create");
+				rename("background");
+ 				run("Image Calculator...", "image1=["+title+"] operation=Difference image2=[background] stack");
+				selectImage(Aid);
+				if (fixedThresh==0) setAutoThreshold(threshModeText+" dark");
+				else setThreshold(fixedThresh,255);
+			}
+			if (backSub==3) { //"RB50"
+				run("Subtract Background...", "rolling=50 light stack");
+				if (fixedThresh==0) setAutoThreshold(threshModeText);
+				else setThreshold(0, threshold);
+				 }
+
+			if (backSub==4) { //"SP1"
+				run("Subtract Background...", "rolling=1 light sliding disable stack");
+				if (fixedThresh==0) setAutoThreshold(threshModeText);
+				else setThreshold(0, threshold);
+				 }
+			if (backSub==5) { // "Max-Z+SP2"
+				run("Stack Deflicker", "frame=-1");
+				title = getTitle();
+				Aid = getImageID();
+				run("Z Project...", "projection=[Min Intensity]") ;
+				run("PNG...", "save=["+path+"_min.PNG]");
+				rename("min");
+				selectImage(Aid);
+				run("Z Project...", "projection=[Max Intensity]") ;
+				run("PNG...", "save=["+path+"_max.PNG]");
+				run("Subtract Background...", "rolling=2 light sliding disable create");
+				rename("background");
+ 				run("Image Calculator...", "image1=["+title+"] operation=Difference image2=[background] stack");
+				selectImage(Aid);
+				if (fixedThresh==0) setAutoThreshold(threshModeText+" dark");
+				else setThreshold(fixedThresh,255);
+
+				}
+			if (backSub==6) { 
+
+				}
+			if (backSub==7) { 
+
+				 }
+				
+			// Now save background corrected movie as ZIP file.
+			run("Convert to Mask", " ");
+			saveAs("ZIP", path+".ZIP");
+		}
+		else {
+			run("Open...","open=["+path+".zip]");
+		}
+
+		if (movieDuration>0) {
+			fps=nSlices/ movieDuration;
+	//		print("FPS: "+fps);
+		}
+		if (pixPrMm>0) {
+			run("Set Scale...", "distance="+pixPrMm+" known=1 pixel=1 unit=mm global");
+		}
+		if (pixPrMm==0) {
+			run("Set Scale...", "distance=0 known=0 pixel=1 unit=pixel");
+		}
+		Stack.setFrameRate(fps);
+		if (!batchMode) {doCommand("Start Animation [\\]");};
+		title = getTitle();
+		if (skeletonize==1) {
+			showStatus("Filling holes");
+			run("Fill Holes", "stack");
+			showStatus("Skeletonizing");
+			run("Skeletonize", "stack");
+		}
+		// Often the first frame of a movie is recorded slower than subsequent frames, creating a lag in the movie. 
+		// This can be fixed by deleting the first frame
+		if (delFirst) {
+			setSlice(1);
+			run("Delete Slice");
+		}
+
+		run("wrMTrck ", "minsize="+minSize+
+			" maxsize="+maxSize+
+			" maxvelocity="+maxVelocity+
+			" maxareachange="+maxAreaChange+
+			" mintracklength="+minTrackLength+ 
+			" bendthreshold="+bendThreshold+
+			" binsize=0 saveresultsfile showpathlengths showlabels showpositions showpaths showsummary"+
+			" rawdata="+ rawData +
+			" benddetect="+bendDetect+ 
+			" fps="+fps+
+			" backsub=0"+
+			" thresholding=otsu"+
+ 			" save=["+path+".txt]");
+
+		run("PNG...", "save=["+path+"_paths.PNG]");
+		close();
+		selectImage(title+" labels");
+
+		Stack.setFrameRate(fps);
+		if (!batchMode) {doCommand("Start Animation [\\]");};
+		saveAs("ZIP", path+"_labels.ZIP");
+//		saveAs("AVI", path+"_labels.avi");
+//		run("QuickTime Movie...", "compression=Animation quality=Normal frame=28 save=["+path+"_labels.mov]");
+//		run("AVI... ", "compression=JPEG frame=28 save=["+path+"_labels.AVI]");
+
+		closeAll();
+		pcount++;
+		} 
+ 
+	}
+ 
+}
+
+//function to close all images
+function closeAll () {
+	while (nImages>0) { 
+		selectImage(nImages); 
+		close(); 
+	}
+}
+
+// Deflicker Stack
+//
+// This macro measure average intensity of all the slices in a stack 
+// and then normalizes to the maximum intensity
+
+function deflickerStack() {
+	max=0;
+	setBatchMode(true);
+	means = newArray(nSlices+1);
+	run("Clear Results");
+	for (n=1; n<=nSlices; n++) {
+		setSlice(n);
+		run("Measure");
+		means[n] = getResult("Mean",nResults-1);
+		//print(means[n]);
+		if (means[n]>max) max=means[n];
+	}
+	for (n=1; n<=nSlices;n++) {
+		setSlice(n);
+		run("Multiply...", "value="+max/means[n]+" slice");
+	}
+	setBatchMode(batchMode);
+	run("Clear Results");
+}
+
+// importSettingsTable is used to import the settings previously used by the wrMTrck_batch script
+//
+// 
+function importSettingsTable() {
+	requires("1.35r");
+	lineseparator = "\n";
+	cellseparator = ",\t";
+
+	// copies the whole RT to an array of lines
+	lines=split(File.openAsString(dir+"wrMTrck-settings.txt"), lineseparator);
+
+	// recreates the columns headers
+	labels=split(lines[0], cellseparator);
+	if (labels[0]==" ")
+		k=1; // it is an ImageJ Results table, skip first column
+	else
+		k=0; // it is not a Results table, load all columns
+	for (j=k; j<labels.length; j++)
+		setResult(labels[j],0,0);
+
+	// dispatches the data into the new RT
+	run("Clear Results");
+	for (i=1; i<lines.length; i++) {
+		items=split(lines[i], cellseparator);
+		for (j=k; j<items.length; j++)
+			setResult(labels[j],i-1,items[j]);
+	}
+	updateResults();
+ }

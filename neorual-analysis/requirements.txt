@@ -1,0 +1,21 @@
+# Neorual 线虫显微图像分析 Python 依赖
+# 安装：pip install -r requirements.txt
+
+# ViT 分类
+torch>=2.0.0
+timm>=0.9.0
+opencv-python>=4.5.0
+matplotlib>=3.5.0
+Pillow>=9.0.0
+numpy>=1.21.0
+grad-cam>=1.4.0
+
+# 串珠分割 (MMSegmentation)
+mmsegmentation>=1.0.0
+mmengine>=0.8.0
+mmcv>=2.0.0
+
+# 细胞体实例分割 (MMDetection + ViTDet)
+mmdet>=3.0.0
+mmengine>=0.8.0
+mmcv>=2.0.0

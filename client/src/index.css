@@ -1,0 +1,724 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", "Fira Code", ui-monospace, monospace;
+}
+
+:root {
+  --radius: 0.625rem;
+}
+
+/* Light theme (default) */
+:root:not(.dark) {
+  --background: oklch(0.98 0.002 260);
+  --foreground: oklch(0.15 0.01 260);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.15 0.01 260);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.15 0.01 260);
+  --primary: oklch(0.55 0.2 250);
+  --primary-foreground: oklch(0.98 0.005 260);
+  --secondary: oklch(0.94 0.01 260);
+  --secondary-foreground: oklch(0.2 0.01 260);
+  --muted: oklch(0.94 0.01 260);
+  --muted-foreground: oklch(0.45 0.02 260);
+  --accent: oklch(0.94 0.02 260);
+  --accent-foreground: oklch(0.2 0.01 260);
+  --destructive: oklch(0.55 0.22 25);
+  --destructive-foreground: oklch(0.98 0.005 0);
+  --border: oklch(0.88 0.01 260);
+  --input: oklch(0.9 0.01 260);
+  --ring: oklch(0.55 0.2 250);
+  --chart-1: oklch(0.55 0.2 250);
+  --chart-2: oklch(0.6 0.18 170);
+  --chart-3: oklch(0.58 0.2 300);
+  --chart-4: oklch(0.65 0.18 80);
+  --chart-5: oklch(0.6 0.22 30);
+  --sidebar: oklch(0.96 0.005 260);
+  --sidebar-foreground: oklch(0.2 0.01 260);
+  --sidebar-primary: oklch(0.55 0.2 250);
+  --sidebar-primary-foreground: oklch(0.98 0.005 260);
+  --sidebar-accent: oklch(0.92 0.02 260);
+  --sidebar-accent-foreground: oklch(0.2 0.01 260);
+  --sidebar-border: oklch(0.88 0.01 260);
+  --sidebar-ring: oklch(0.55 0.2 250);
+}
+
+/* Dark theme */
+.dark {
+  --background: oklch(0.13 0.005 260);
+  --foreground: oklch(0.93 0.005 260);
+  --card: oklch(0.17 0.008 260);
+  --card-foreground: oklch(0.93 0.005 260);
+  --popover: oklch(0.19 0.008 260);
+  --popover-foreground: oklch(0.93 0.005 260);
+  --primary: oklch(0.65 0.19 250);
+  --primary-foreground: oklch(0.98 0.005 260);
+  --secondary: oklch(0.22 0.01 260);
+  --secondary-foreground: oklch(0.82 0.01 260);
+  --muted: oklch(0.22 0.008 260);
+  --muted-foreground: oklch(0.62 0.015 260);
+  --accent: oklch(0.24 0.015 260);
+  --accent-foreground: oklch(0.93 0.005 260);
+  --destructive: oklch(0.65 0.2 25);
+  --destructive-foreground: oklch(0.98 0.005 0);
+  --border: oklch(0.26 0.012 260);
+  --input: oklch(0.24 0.012 260);
+  --ring: oklch(0.65 0.19 250);
+  --chart-1: oklch(0.65 0.19 250);
+  --chart-2: oklch(0.7 0.15 170);
+  --chart-3: oklch(0.68 0.18 300);
+  --chart-4: oklch(0.75 0.15 80);
+  --chart-5: oklch(0.7 0.2 30);
+  --sidebar: oklch(0.15 0.006 260);
+  --sidebar-foreground: oklch(0.85 0.01 260);
+  --sidebar-primary: oklch(0.65 0.19 250);
+  --sidebar-primary-foreground: oklch(0.98 0.005 260);
+  --sidebar-accent: oklch(0.22 0.012 260);
+  --sidebar-accent-foreground: oklch(0.93 0.005 260);
+  --sidebar-border: oklch(0.26 0.012 260);
+  --sidebar-ring: oklch(0.65 0.19 250);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]),
+  [type="button"]:not(:disabled),
+  [type="submit"]:not(:disabled),
+  [type="reset"]:not(:disabled),
+  a[href],
+  select:not(:disabled),
+  input[type="checkbox"]:not(:disabled),
+  input[type="radio"]:not(:disabled) {
+    @apply cursor-pointer;
+  }
+}
+
+@layer components {
+  .container {
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .flex {
+    min-height: 0;
+    min-width: 0;
+  }
+
+  @media (min-width: 640px) {
+    .container {
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .container {
+      padding-left: 2rem;
+      padding-right: 2rem;
+      max-width: 1280px;
+    }
+  }
+}
+
+/* Custom scrollbar for dark theme */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: oklch(0.35 0.01 260);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: oklch(0.45 0.01 260);
+}
+
+/* 左侧栏 All tasks 列表：始终显示上下滚动条 */
+.tasks-scroll-container {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(128, 128, 128, 0.45) transparent;
+}
+.tasks-scroll-container::-webkit-scrollbar {
+  width: 8px;
+}
+.tasks-scroll-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+.tasks-scroll-container::-webkit-scrollbar-thumb {
+  background: rgba(128, 128, 128, 0.45);
+  border-radius: 4px;
+}
+.tasks-scroll-container::-webkit-scrollbar-thumb:hover {
+  background: rgba(128, 128, 128, 0.6);
+}
+
+/* 中间栏聊天区域：确保水平和垂直滚动条可见 */
+.chat-messages-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(128, 128, 128, 0.4) transparent;
+}
+.chat-messages-scroll::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+.chat-messages-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.chat-messages-scroll::-webkit-scrollbar-thumb {
+  background: rgba(128, 128, 128, 0.4);
+  border-radius: 4px;
+}
+.chat-messages-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(128, 128, 128, 0.6);
+}
+
+/* Code block styling */
+pre code {
+  font-family: "JetBrains Mono", "Fira Code", ui-monospace, monospace;
+  font-size: 0.85rem;
+  line-height: 1.6;
+}
+
+/* 普通文字自动换行，完整显示（含长 URL 等） */
+.prose p,
+.prose li,
+.prose td,
+.prose th,
+.prose a,
+.prose span {
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+/* 强制长单词和 URL 换行 */
+.prose {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+}
+
+/* 代码块、表格、流程图等需水平滚动，不换行 */
+.prose pre,
+.prose pre code,
+.prose [data-streamdown="code-block"] pre,
+.prose [data-streamdown="code-block"] code,
+.prose [data-streamdown="mermaid-block"] {
+  word-break: normal;
+  overflow-wrap: normal;
+  white-space: pre;
+}
+
+/* 代码块、流程图、表格添加水平滚动 */
+.prose [data-streamdown="code-block"],
+.prose [data-streamdown="mermaid-block"],
+.prose [data-streamdown="table-wrapper"] .overflow-x-auto,
+.prose [data-streamdown="table-wrapper"] > div:last-child {
+  overflow-x: auto !important;
+  overflow-y: visible;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* 水平滚动条样式 */
+.prose [data-streamdown="code-block"]::-webkit-scrollbar,
+.prose [data-streamdown="mermaid-block"]::-webkit-scrollbar,
+.prose [data-streamdown="table-wrapper"] .overflow-x-auto::-webkit-scrollbar,
+.prose [data-streamdown="table-wrapper"] > div:last-child::-webkit-scrollbar {
+  height: 8px;
+}
+
+.prose [data-streamdown="code-block"]::-webkit-scrollbar-track,
+.prose [data-streamdown="mermaid-block"]::-webkit-scrollbar-track,
+.prose [data-streamdown="table-wrapper"] .overflow-x-auto::-webkit-scrollbar-track,
+.prose [data-streamdown="table-wrapper"] > div:last-child::-webkit-scrollbar-track {
+  background: rgba(128, 128, 128, 0.15);
+  border-radius: 4px;
+}
+
+.prose [data-streamdown="code-block"]::-webkit-scrollbar-thumb,
+.prose [data-streamdown="mermaid-block"]::-webkit-scrollbar-thumb,
+.prose [data-streamdown="table-wrapper"] .overflow-x-auto::-webkit-scrollbar-thumb,
+.prose [data-streamdown="table-wrapper"] > div:last-child::-webkit-scrollbar-thumb {
+  background: rgba(128, 128, 128, 0.4);
+  border-radius: 4px;
+}
+
+.prose [data-streamdown="code-block"]::-webkit-scrollbar-thumb:hover,
+.prose [data-streamdown="mermaid-block"]::-webkit-scrollbar-thumb:hover,
+.prose [data-streamdown="table-wrapper"] .overflow-x-auto::-webkit-scrollbar-thumb:hover,
+.prose [data-streamdown="table-wrapper"] > div:last-child::-webkit-scrollbar-thumb:hover {
+  background: rgba(128, 128, 128, 0.6);
+}
+
+/* Firefox 滚动条 */
+.prose [data-streamdown="code-block"],
+.prose [data-streamdown="mermaid-block"],
+.prose [data-streamdown="table-wrapper"] .overflow-x-auto,
+.prose [data-streamdown="table-wrapper"] > div:last-child {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(128, 128, 128, 0.4) rgba(128, 128, 128, 0.15);
+}
+
+/* Streamdown 表格：复制/下载按钮置于表格右上角，同一水平线，悬停时显示 */
+[data-streamdown="table-wrapper"] {
+  @apply relative rounded-lg border border-border bg-muted/20 overflow-hidden;
+}
+[data-streamdown="table-wrapper"] > div:first-child:has(button) {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  gap: 0.25rem !important;
+  position: absolute !important;
+  top: 0.5rem !important;
+  right: 0.5rem !important;
+  z-index: 10 !important;
+  opacity: 0 !important;
+  transition: opacity 0.2s !important;
+}
+[data-streamdown="table-wrapper"]:hover > div:first-child:has(button),
+[data-streamdown="table-wrapper"] > div:first-child:has(button):hover {
+  opacity: 1 !important;
+}
+[data-streamdown="table-wrapper"] > div:first-child:has(button) button {
+  @apply flex items-center justify-center size-8 rounded-md bg-background/90 border border-border/50 shadow-sm hover:bg-muted/60 transition-colors;
+}
+[data-streamdown="table-wrapper"]:has(> div:first-child:has(button)) .overflow-x-auto {
+  @apply pt-12 pr-2 pb-2 pl-2;
+}
+
+/* Streamdown prose overrides for dark theme */
+.prose {
+  --tw-prose-body: oklch(0.88 0.005 260);
+  --tw-prose-headings: oklch(0.95 0.005 260);
+  --tw-prose-links: oklch(0.7 0.19 250);
+  --tw-prose-code: oklch(0.85 0.12 300);
+  --tw-prose-pre-bg: oklch(0.12 0.005 260);
+  --tw-prose-pre-code: oklch(0.88 0.005 260);
+}
+
+/* 确保标题后的内容（列表、段落等）正确显示 */
+/* 使用通用选择器确保标题后的所有内容都显示 */
+.prose h1 ~ *,
+.prose h2 ~ *,
+.prose h3 ~ *,
+.prose h4 ~ *,
+.prose h5 ~ *,
+.prose h6 ~ *,
+.prose [data-streamdown="heading-1"] ~ *,
+.prose [data-streamdown="heading-2"] ~ *,
+.prose [data-streamdown="heading-3"] ~ *,
+.prose [data-streamdown="heading-4"] ~ *,
+.prose [data-streamdown="heading-5"] ~ *,
+.prose [data-streamdown="heading-6"] ~ * {
+  display: revert !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  height: auto !important;
+  min-height: auto !important;
+  max-height: none !important;
+}
+
+/* 确保紧跟在标题后的第一个元素也显示 */
+.prose h1 + *,
+.prose h2 + *,
+.prose h3 + *,
+.prose h4 + *,
+.prose h5 + *,
+.prose h6 + *,
+.prose [data-streamdown="heading-1"] + *,
+.prose [data-streamdown="heading-2"] + *,
+.prose [data-streamdown="heading-3"] + *,
+.prose [data-streamdown="heading-4"] + *,
+.prose [data-streamdown="heading-5"] + *,
+.prose [data-streamdown="heading-6"] + * {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  height: auto !important;
+  min-height: auto !important;
+  max-height: none !important;
+}
+
+/* 确保列表正确显示 */
+.prose ul,
+.prose ol,
+.prose [data-streamdown="unordered-list"],
+.prose [data-streamdown="ordered-list"] {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  margin-top: 0.5em !important;
+  margin-bottom: 0.5em !important;
+  height: auto !important;
+  min-height: auto !important;
+  max-height: none !important;
+  list-style-position: outside !important;
+  padding-left: 1.5em !important;
+}
+
+.prose li,
+.prose [data-streamdown="list-item"] {
+  display: list-item !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  height: auto !important;
+  min-height: auto !important;
+  max-height: none !important;
+}
+
+/* 确保段落正确显示 */
+.prose p {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  height: auto !important;
+  min-height: auto !important;
+  max-height: none !important;
+}
+
+/* 确保所有 Streamdown 生成的内容都可见 */
+.prose [data-streamdown] {
+  display: revert !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  height: auto !important;
+  min-height: auto !important;
+  max-height: none !important;
+}
+
+/* 确保所有可能的 markdown 元素都正确显示 */
+.prose > * {
+  max-height: none !important;
+}
+
+/* 特别处理：确保标题后的列表正确显示（使用 ~ 选择器匹配所有后续兄弟元素） */
+.prose h1 ~ ul,
+.prose h1 ~ ol,
+.prose h2 ~ ul,
+.prose h2 ~ ol,
+.prose h3 ~ ul,
+.prose h3 ~ ol,
+.prose h4 ~ ul,
+.prose h4 ~ ol,
+.prose h5 ~ ul,
+.prose h5 ~ ol,
+.prose h6 ~ ul,
+.prose h6 ~ ol,
+.prose [data-streamdown="heading-1"] ~ ul,
+.prose [data-streamdown="heading-1"] ~ ol,
+.prose [data-streamdown="heading-2"] ~ ul,
+.prose [data-streamdown="heading-2"] ~ ol,
+.prose [data-streamdown="heading-3"] ~ ul,
+.prose [data-streamdown="heading-3"] ~ ol,
+.prose [data-streamdown="heading-4"] ~ ul,
+.prose [data-streamdown="heading-4"] ~ ol,
+.prose [data-streamdown="heading-5"] ~ ul,
+.prose [data-streamdown="heading-5"] ~ ol,
+.prose [data-streamdown="heading-6"] ~ ul,
+.prose [data-streamdown="heading-6"] ~ ol {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  margin-top: 0.5em !important;
+  margin-bottom: 0.5em !important;
+  padding-left: 1.5em !important;
+}
+
+/* 通用规则：确保 prose 容器内的所有直接子元素都可见 */
+.prose > * {
+  display: revert !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  height: auto !important;
+  min-height: auto !important;
+  max-height: none !important;
+}
+
+/* 确保所有嵌套的内容也可见 */
+.prose * {
+  max-height: none !important;
+}
+
+/* Streamdown 表格和代码块：确保内容可见 */
+.prose [data-streamdown="table-wrapper"],
+.prose [data-streamdown="code-block"],
+.prose [data-streamdown="mermaid-block"] {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  height: auto !important;
+  min-height: auto !important;
+}
+
+/* table-wrapper 的表格容器需能撑开显示内容 */
+.prose [data-streamdown="table-wrapper"] > div:last-child {
+  flex: 1 1 auto !important;
+  min-height: auto !important;
+}
+
+/* 表格内容：overflow-x-auto 为 div，需 display:block；table 需 display:table */
+.prose [data-streamdown="table-wrapper"] .overflow-x-auto,
+.prose [data-streamdown="table-wrapper"] div[class*="overflow-x-auto"],
+.prose [data-streamdown="table-wrapper"] > div:last-child {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  overflow-x: auto !important;
+  min-height: 0 !important;
+}
+
+.prose [data-streamdown="table-wrapper"] table,
+.prose table {
+  display: table !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  width: 100% !important;
+}
+
+.prose [data-streamdown="table-wrapper"] th,
+.prose [data-streamdown="table-wrapper"] td,
+.prose th,
+.prose td {
+  display: table-cell !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* Streamdown 代码块双渲染修复：仅显示 dark 版本，避免一黑一白重复显示 */
+[data-code-block-container] [data-code-block]:first-of-type {
+  display: none !important;
+}
+[data-code-block-container] [data-code-block]:last-of-type {
+  display: block !important;
+}
+
+/* 移除表格斑马纹，避免 wrMTrck 等数据一黑一白重复显示 */
+.prose [data-streamdown="table-wrapper"] tbody tr,
+.prose table tbody tr {
+  background: hsl(var(--muted) / 0.25) !important;
+}
+.prose [data-streamdown="table-wrapper"] tbody tr:hover,
+.prose table tbody tr:hover {
+  background: hsl(var(--muted) / 0.4) !important;
+}
+
+/* 代码块内容 */
+.prose [data-streamdown="code-block"] pre,
+.prose [data-streamdown="code-block"] code,
+.prose pre,
+.prose pre code {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  white-space: pre !important;
+  overflow-x: auto !important;
+}
+
+/* 标题后的 div、section 等块级容器 */
+.prose h1 ~ div,
+.prose h2 ~ div,
+.prose h3 ~ div,
+.prose h4 ~ div,
+.prose h5 ~ div,
+.prose h6 ~ div,
+.prose [data-streamdown^="heading-"] ~ div {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  min-height: auto !important;
+}
+
+/* 兜底：强制 prose 内所有非隐藏元素可见（覆盖可能的外部样式） */
+.prose .group,
+.prose [class*="flex"],
+.prose [class*="space-y"] {
+  min-height: auto !important;
+  overflow: visible !important;
+}
+
+/* Typing animation */
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+.animate-blink {
+  animation: blink 1s step-end infinite;
+}
+
+/* Hero background: zoom-in load animation (from large to normal) */
+@keyframes hero-bg-zoom-in {
+  0% { transform: scale(1.15); }
+  100% { transform: scale(1); }
+}
+.hero-bg-zoom-in {
+  animation: hero-bg-zoom-in 1.8s ease-out forwards;
+}
+
+/* Pulse glow for status indicators */
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 4px 0 oklch(0.65 0.19 250 / 0.4); }
+  50% { box-shadow: 0 0 12px 2px oklch(0.65 0.19 250 / 0.7); }
+}
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* ========== Agent Page Premium Design Tokens ========== */
+:root {
+  --agent-sidebar-bg: oklch(0.96 0.004 260);
+  --agent-sidebar-border: oklch(0.9 0.008 260);
+  --agent-card-shadow: 0 1px 3px oklch(0 0 0 / 0.04);
+  --agent-card-shadow-hover: 0 4px 12px oklch(0 0 0 / 0.06);
+  --agent-input-ring: oklch(0.55 0.2 250 / 0.25);
+  --agent-gradient-subtle: linear-gradient(135deg, oklch(0.98 0.002 260) 0%, oklch(0.96 0.004 260) 100%);
+}
+.dark {
+  --agent-sidebar-bg: oklch(0.12 0.006 260);
+  --agent-sidebar-border: oklch(0.22 0.01 260);
+  --agent-card-shadow: 0 1px 3px oklch(0 0 0 / 0.15);
+  --agent-card-shadow-hover: 0 4px 20px oklch(0 0 0 / 0.25);
+  --agent-input-ring: oklch(0.65 0.19 250 / 0.35);
+  --agent-gradient-subtle: linear-gradient(135deg, oklch(0.14 0.006 260) 0%, oklch(0.11 0.005 260) 100%);
+}
+
+/* Agent page layout */
+.agent-page {
+  background: var(--agent-gradient-subtle);
+}
+.agent-left-sidebar {
+  background: var(--agent-sidebar-bg);
+  backdrop-filter: blur(12px);
+}
+.agent-right-sidebar {
+  background: var(--agent-sidebar-bg);
+  backdrop-filter: blur(12px);
+}
+.agent-center-card {
+  box-shadow: var(--agent-card-shadow);
+  transition: box-shadow 0.2s ease;
+}
+.agent-center-card:hover {
+  box-shadow: var(--agent-card-shadow-hover);
+}
+.agent-input-wrapper {
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+.agent-input-wrapper:focus-within {
+  box-shadow: 0 0 0 2px var(--agent-input-ring);
+}
+
+/* 中文品牌名：神安哨兵 - 使用 Noto Sans SC 加粗 */
+.font-brand-zh {
+  font-family: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+  font-weight: 800;
+}
+
+/* 面板标题：目标/需求、分析结果 - 黑体加粗 */
+.font-panel-title {
+  font-family: "SimHei", "Microsoft YaHei", "Heiti SC", "PingFang SC", sans-serif;
+  font-weight: 700;
+}
+
+/* Agent typography */
+.agent-heading {
+  font-family: "Playfair Display", Georgia, serif;
+  letter-spacing: -0.02em;
+}
+.agent-subheading {
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
+/* Agent artifact card variants */
+.agent-artifact-card {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.agent-artifact-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px oklch(0 0 0 / 0.08);
+}
+.dark .agent-artifact-card:hover {
+  box-shadow: 0 4px 16px oklch(0 0 0 / 0.2);
+}
+
+/* Agent status shimmer */
+@keyframes agent-shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.agent-loading-shimmer {
+  background: linear-gradient(
+    90deg,
+    oklch(0.22 0.01 260) 0%,
+    oklch(0.28 0.015 260) 50%,
+    oklch(0.22 0.01 260) 100%
+  );
+  background-size: 200% 100%;
+  animation: agent-shimmer 1.5s ease-in-out infinite;
+}
+
+/* Settings: base font scale (rem-relative UI) */
+html {
+  font-size: 16px;
+}
+html[data-font-scale="sm"] {
+  font-size: 14px;
+}
+html[data-font-scale="lg"] {
+  font-size: 18px;
+}

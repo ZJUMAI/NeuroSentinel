@@ -1,0 +1,2 @@
+# 将 wrMTrck_.jar 等 Fiji 插件放入此目录
+# 构建镜像时会自动复制到 Fiji 的 plugins 目录
