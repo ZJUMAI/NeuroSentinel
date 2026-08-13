@@ -82,7 +82,7 @@ pnpm db:push
 
 ## 演示视频
 
-[▶️ 点击查看 NeuroSentinel 演示视频](demo/demovideo.mp4)
+[▶️ 点击播放 NeuroSentinel 演示视频](https://github.com/ZJUMAI/NeuroSentinel/raw/refs/heads/main/demo/demovideo.mp4)
 
 ---
 
