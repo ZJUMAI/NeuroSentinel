@@ -80,6 +80,12 @@ pnpm db:push
 
 ---
 
+## 演示视频
+
+[▶️ 点击查看 NeuroSentinel 演示视频](demo/demovideo.mp4)
+
+---
+
 ## License
 
 MIT
